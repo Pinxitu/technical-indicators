@@ -19,7 +19,7 @@ export function rsi(input: number[] | Candle[], options: RsiOptions = {}): numbe
   const losses = nanArray(c.length)
   for (let i = 1; i < c.length; i++) {
     const d = c[i] - c[i - 1]
-    if (Number.isNaN(d)) {
+    if (!Number.isFinite(d)) {
       gains[i] = NaN
       losses[i] = NaN
     } else {

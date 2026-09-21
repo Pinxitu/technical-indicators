@@ -24,6 +24,16 @@ describe('NaN propagation contract (a non-finite value inside the series, not th
     for (let i = NAN_AT; i < out.length; i++) expect(Number.isNaN(out[i])).toBe(true)
   })
 
+  it('rsi: an Infinity close is propagated as NaN (like other non-finite values)', () => {
+    const closesWithInfinity = [...baseCloses]
+    closesWithInfinity[NAN_AT] = Infinity
+    const out = rsi(closesWithInfinity, { period: 14 })
+    expect(out[NAN_AT]).toBeNaN()
+    expect(out[NAN_AT + 1]).toBeNaN()
+    // Wilder smoothing never recovers from the bad bar
+    for (let i = NAN_AT; i < out.length; i++) expect(Number.isNaN(out[i])).toBe(true)
+  })
+
   it('obv: a bad close poisons only that bar; the running total keeps accumulating from the last finite close', () => {
     const out = obv(barsWithNaNClose)
     expect(out[NAN_AT]).toBeNaN()

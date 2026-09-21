@@ -5,7 +5,7 @@ mkdirSync('data/local', { recursive: true })
 const today = new Date().toISOString().slice(0, 10)
 const header = (source, url, license) => `# source: ${source}\n# url: ${url}\n# downloaded_at: ${today}\n# license: ${license}\n`
 
-const FRED_ROW = /^\d{4}-\d\d-\d\d,-?[\d.]+$/
+const FRED_ROW = /^\d{4}-\d\d-\d\d,-?\d+(\.\d+)?$/
 
 const fredCitation = (id) =>
   `Public domain (U.S. federal government work: Board of Governors of the Federal Reserve System / ` +
