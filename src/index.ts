@@ -30,4 +30,6 @@ export { ichimoku } from './indicators/ichimoku'
 export type { IchimokuOptions, IchimokuResult } from './indicators/ichimoku'
 export { supertrend } from './indicators/supertrend'
 export type { SupertrendOptions, SupertrendResult } from './indicators/supertrend'
+export { fibonacciRetracement, fibonacciExtension, FIBONACCI_RETRACEMENT_LEVELS, FIBONACCI_EXTENSION_LEVELS } from './indicators/fibonacci'
+export type { FibonacciOptions, FibonacciLevel } from './indicators/fibonacci'
 
