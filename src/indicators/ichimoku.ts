@@ -35,7 +35,8 @@ const shiftForward = (v: number[], d: number): number[] => {
  *            https://tradingcompendium.com/es/indicadores-tecnicos/ichimoku-cloud-kinko-hyo
  */
 export function ichimoku(candles: Candle[], options: IchimokuOptions = {}): IchimokuResult {
-  const { tenkan = 9, kijun = 26, senkouB = 52, displacement = 26 } = options
+  const { tenkan = 9, kijun = 26, senkouB = 52, displacement: displacementRaw = 26 } = options
+  const displacement = displacementRaw < 0 ? 0 : displacementRaw
   const h = candles.map((c) => c.high)
   const l = candles.map((c) => c.low)
   const t = midpoint(h, l, tenkan)

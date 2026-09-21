@@ -14,13 +14,18 @@ export function rsi(input: number[] | Candle[], options: RsiOptions = {}): numbe
   const period = options.period ?? 14
   const c = closesOf(input)
   const out = nanArray(c.length)
-  if (c.length < period + 1) return out
+  if (period <= 0 || c.length < period + 1) return out
   const gains = nanArray(c.length)
   const losses = nanArray(c.length)
   for (let i = 1; i < c.length; i++) {
     const d = c[i] - c[i - 1]
-    gains[i] = d > 0 ? d : 0
-    losses[i] = d < 0 ? -d : 0
+    if (Number.isNaN(d)) {
+      gains[i] = NaN
+      losses[i] = NaN
+    } else {
+      gains[i] = d > 0 ? d : 0
+      losses[i] = d < 0 ? -d : 0
+    }
   }
   const g = wilderSmooth(gains, period)
   const l = wilderSmooth(losses, period)

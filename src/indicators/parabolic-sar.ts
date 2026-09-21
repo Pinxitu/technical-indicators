@@ -15,10 +15,13 @@ export interface ParabolicSarResult {
  * Parabolic SAR (Wilder 1978). SAR(t+1) = SAR(t) + AF·(EP − SAR(t)); AF starts at `step`, grows by `step` on
  * each new extreme up to `max`; long SAR may not exceed the two prior lows (short: two prior highs) — the
  * unconditional two-bar clamp of Wilder 1978 / TA-Lib, applied against candles[i-1] and candles[i-2] with no
- * exception for the leg's seed bar. (An earlier version of this file exempted the seed bar from the clamp to
- * match a plan document's worked example; that example turned out to have forgotten to apply its own stated
- * clamp rule at SAR[2] — re-derived by hand, the correct, clamp-respecting chain for the fixture in
- * tests/parabolic-sar.ts is SAR[1..4] = 10, 10, 10.12, 10.3528, which is what this implementation produces.)
+ * exception for the leg's seed bar.
+ * The two-bar clamp is unconditional, including on the first bars of a leg, matching Wilder 1978 and
+ * TA-Lib; the fixture in `tests/parabolic-sar.test.ts` gives SAR[1..4] = 10, 10, 10.12, 10.3528. Known
+ * deviation: on reversal the new SAR is set to the prior extreme point without clamping it into the
+ * reversal bar's range (TA-Lib does clamp).
+ * If a bar's high, low or close is not finite, `sar[i]` is `NaN` and `trend[i]` is `0` for that bar only;
+ * the algorithm resumes on the next bar from the state (`cur`/`ep`/`af`/`long`) it had before that bar.
  * Reference: https://tradingcompendium.com/en/technical-indicators/parabolic-sar-stop-and-reverse
  *            https://tradingcompendium.com/es/indicadores-tecnicos/parabolic-sar-stop-and-reverse
  */
@@ -35,10 +38,15 @@ export function parabolicSar(candles: Candle[], options: ParabolicSarOptions = {
   sar[1] = cur
   trend[1] = long ? 1 : -1
   for (let i = 2; i < n; i++) {
+    const c = candles[i]
+    if (!Number.isFinite(c.high) || !Number.isFinite(c.low) || !Number.isFinite(c.close)) {
+      sar[i] = NaN
+      trend[i] = 0
+      continue
+    }
     let next = cur + af * (ep - cur)
     if (long) next = Math.min(next, candles[i - 1].low, candles[i - 2].low)
     else next = Math.max(next, candles[i - 1].high, candles[i - 2].high)
-    const c = candles[i]
     if (long && c.low < next) {
       // reverse to short
       long = false
