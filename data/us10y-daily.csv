@@ -1,7 +1,7 @@
 # source: FRED, Federal Reserve Bank of St. Louis (10-year Treasury constant maturity)
 # url: https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10
 # downloaded_at: 2026-09-21
-# license: Free use with attribution; see https://fred.stlouisfed.org/legal/
+# license: Public domain (U.S. federal government work: Board of Governors of the Federal Reserve System / U.S. Energy Information Administration); cite FRED, Federal Reserve Bank of St. Louis, series DGS10 — https://fred.stlouisfed.org/legal/
 date,close
 1962-01-02,4.06
 1962-01-03,4.03

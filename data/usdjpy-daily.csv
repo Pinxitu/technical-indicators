@@ -1,7 +1,7 @@
 # source: FRED, Federal Reserve Bank of St. Louis (Japanese Yen per US Dollar)
 # url: https://fred.stlouisfed.org/graph/fredgraph.csv?id=DEXJPUS
 # downloaded_at: 2026-09-21
-# license: Free use with attribution; see https://fred.stlouisfed.org/legal/
+# license: Public domain (U.S. federal government work: Board of Governors of the Federal Reserve System / U.S. Energy Information Administration); cite FRED, Federal Reserve Bank of St. Louis, series DEXJPUS — https://fred.stlouisfed.org/legal/
 date,close
 1971-01-04,357.73
 1971-01-05,357.81

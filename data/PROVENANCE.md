@@ -7,23 +7,38 @@ only public, unauthenticated endpoints (no API keys). Each CSV starts with four 
 
 | File | Source | Series ID | Fields | Refresh command | Licence |
 |---|---|---|---|---|---|
-| `sp500-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `SP500` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
-| `nasdaq-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `NASDAQCOM` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
-| `djia-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DJIA` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
-| `eurusd-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DEXUSEU` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
-| `usdjpy-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DEXJPUS` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
-| `gbpusd-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DEXUSUK` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
-| `wti-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DCOILWTICO` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
-| `us10y-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DGS10` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
-| `vix-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `VIXCLS` | date, close | `npm run data` | [FRED legal](https://fred.stlouisfed.org/legal/) |
+| `eurusd-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DEXUSEU` | date, close | `npm run data` | Public domain (U.S. federal government work); see [FRED legal](https://fred.stlouisfed.org/legal/) |
+| `usdjpy-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DEXJPUS` | date, close | `npm run data` | Public domain (U.S. federal government work); see [FRED legal](https://fred.stlouisfed.org/legal/) |
+| `gbpusd-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DEXUSUK` | date, close | `npm run data` | Public domain (U.S. federal government work); see [FRED legal](https://fred.stlouisfed.org/legal/) |
+| `wti-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DCOILWTICO` | date, close | `npm run data` | Public domain (U.S. federal government work); see [FRED legal](https://fred.stlouisfed.org/legal/) |
+| `us10y-daily.csv` | FRED, Federal Reserve Bank of St. Louis | `DGS10` | date, close | `npm run data` | Public domain (U.S. federal government work); see [FRED legal](https://fred.stlouisfed.org/legal/) |
 | `btcusdt-1d.csv` | Binance public market data | `BTCUSDT` (1d klines) | date, open, high, low, close, volume | `npm run data` | Public API; data provided as-is by Binance |
 | `ethusdt-1d.csv` | Binance public market data | `ETHUSDT` (1d klines) | date, open, high, low, close, volume | `npm run data` | Public API; data provided as-is by Binance |
 | `btcusdt-4h.csv` | Binance public market data | `BTCUSDT` (4h klines) | date, open, high, low, close, volume | `npm run data` | Public API; data provided as-is by Binance |
 
+## Not redistributed
+
+`sp500-daily.csv` (FRED `SP500`), `djia-daily.csv` (FRED `DJIA`), `nasdaq-daily.csv` (FRED `NASDAQCOM`)
+and `vix-daily.csv` (FRED `VIXCLS`) are **not committed to this repository**. FRED tags all four series
+"Copyrighted: Pre-Approval Required" — the underlying index values are owned by S&P Dow Jones Indices
+LLC (`SP500`, `DJIA`), Nasdaq, Inc. (`NASDAQCOM`) and Cboe Global Markets, Inc. (`VIXCLS`), each of which
+prohibits reproduction in any form without a licence. `npm run data` still fetches all four — the
+`fred(...)` calls for them are in `scripts/fetch-data.mjs` unchanged — but writes them to `data/local/`,
+which is listed in `.gitignore` and never committed. To reproduce the S&P 500 / DJIA / NASDAQ / VIX
+evidence locally, run `npm run data` yourself; the rest of the evidence in `evidence/out/` (RSI, MACD,
+Bollinger Bands, SMA, EMA) is generated from `eurusd-daily.csv` instead, precisely so that the committed
+evidence never depends on this copyrighted data.
+
+## FRED citation requirement
+
+FRED's terms (https://fred.stlouisfed.org/legal/) ask that any use of FRED data cite "Federal Reserve
+Bank of St. Louis" and the series ID. The public-domain FRED series in this repository (`DEXUSEU`,
+`DEXJPUS`, `DEXUSUK`, `DGS10`, `DCOILWTICO` — original data from the Federal Reserve Board of Governors
+and the U.S. Energy Information Administration) carry that citation in their own `# license:` header
+line; anyone redistributing these CSVs further should keep that line intact.
+
 This data is republished here solely to make the evidence in `evidence/out/` reproducible; it comes
 with no warranty of accuracy, completeness, or fitness for any purpose, and reflects whatever each
-provider returned at `downloaded_at` in each file's header. The FRED `SP500` and `DJIA` series are
-capped by the provider at roughly the last 10 years of history — they are not full-history series and
-will not extend further back on re-fetch. The Binance klines endpoint returns at most 1000 bars per
-request, so the two BTC/USDT files and the ETH/USDT file are rolling windows (the most recent 1000 daily
-or 4-hour bars as of `downloaded_at`), not full history either.
+provider returned at `downloaded_at` in each file's header. The Binance klines endpoint returns at most
+1000 bars per request, so the two BTC/USDT files and the ETH/USDT file are rolling windows (the most
+recent 1000 daily or 4-hour bars as of `downloaded_at`), not full history.
