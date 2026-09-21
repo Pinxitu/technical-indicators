@@ -1,24 +1,24 @@
-# MACD(12,26,9) behaviour — sp500-daily.csv
+# MACD(12,26,9) behaviour — eurusd-daily.csv
 
-MACD(12,26,9) computed on the closing-price series (2488 valid bars).
+MACD(12,26,9) computed on the closing-price series (6920 valid bars).
 
-- Signal-line crossovers: 216 total, 8.68 per 100 bars
-- Median bars between crossovers: 9
+- Signal-line crossovers: 590 total, 8.53 per 100 bars
+- Median bars between crossovers: 10
 
 ## Chart (last 250 bars)
 
-![MACD(12,26,9) behaviour — sp500-daily.csv](./macd.svg)
+![MACD(12,26,9) behaviour — eurusd-daily.csv](./macd.svg)
 
 ## Dataset
 
-- File: `data/sp500-daily.csv`
+- File: `data/eurusd-daily.csv`
 - Provenance header:
 
 ```
-# source: FRED, Federal Reserve Bank of St. Louis (S&P 500 index, daily close, last 10 years per S&P licence)
-# url: https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500
+# source: FRED, Federal Reserve Bank of St. Louis (US Dollars per Euro, noon buying rates NY)
+# url: https://fred.stlouisfed.org/graph/fredgraph.csv?id=DEXUSEU
 # downloaded_at: 2026-09-21
-# license: Free use with attribution; see https://fred.stlouisfed.org/legal/
+# license: Public domain (U.S. federal government work: Board of Governors of the Federal Reserve System / U.S. Energy Information Administration); cite FRED, Federal Reserve Bank of St. Louis, series DEXUSEU — https://fred.stlouisfed.org/legal/
 ```
 
 - Library version: 0.1.0

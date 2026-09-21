@@ -1,25 +1,25 @@
-# Bollinger Bands(20,2) behaviour — sp500-daily.csv
+# Bollinger Bands(20,2) behaviour — eurusd-daily.csv
 
-Bollinger Bands(20, 2σ) computed on the closing-price series (2494 valid bars).
+Bollinger Bands(20, 2σ) computed on the closing-price series (6926 valid bars).
 
-- Closes outside the bands (above upper or below lower): 10.87%
+- Closes outside the bands (above upper or below lower): 11.46%
 - Theoretical figure for a **normal distribution** at ±2σ: **4.6%** (this is the textbook value under a
   normality assumption, not an observation from this sample — it is cited here only for comparison)
 
 ## Chart (last 250 bars)
 
-![Bollinger Bands(20,2) behaviour — sp500-daily.csv](./bollinger.svg)
+![Bollinger Bands(20,2) behaviour — eurusd-daily.csv](./bollinger.svg)
 
 ## Dataset
 
-- File: `data/sp500-daily.csv`
+- File: `data/eurusd-daily.csv`
 - Provenance header:
 
 ```
-# source: FRED, Federal Reserve Bank of St. Louis (S&P 500 index, daily close, last 10 years per S&P licence)
-# url: https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500
+# source: FRED, Federal Reserve Bank of St. Louis (US Dollars per Euro, noon buying rates NY)
+# url: https://fred.stlouisfed.org/graph/fredgraph.csv?id=DEXUSEU
 # downloaded_at: 2026-09-21
-# license: Free use with attribution; see https://fred.stlouisfed.org/legal/
+# license: Public domain (U.S. federal government work: Board of Governors of the Federal Reserve System / U.S. Energy Information Administration); cite FRED, Federal Reserve Bank of St. Louis, series DEXUSEU — https://fred.stlouisfed.org/legal/
 ```
 
 - Library version: 0.1.0

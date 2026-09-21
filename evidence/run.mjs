@@ -124,13 +124,13 @@ ${CLOSING}
 // ---------------------------------------------------------------------------------------------
 // Data
 // ---------------------------------------------------------------------------------------------
-const sp500 = loadCsv(fileURLToPath(new URL('../data/sp500-daily.csv', HERE)))
+const eurusd = loadCsv(fileURLToPath(new URL('../data/eurusd-daily.csv', HERE)))
 const btc = loadCsv(fileURLToPath(new URL('../data/btcusdt-1d.csv', HERE)))
-const sp500Closes = sp500.map((c) => c.close)
+const eurusdCloses = eurusd.map((c) => c.close)
 const btcCloses = btc.map((c) => c.close)
 
 // ---------------------------------------------------------------------------------------------
-// RSI(14) — on both sp500-daily.csv and btcusdt-1d.csv
+// RSI(14) — on both eurusd-daily.csv and btcusdt-1d.csv
 // ---------------------------------------------------------------------------------------------
 function rsiReport(slug, datasetFile, closes) {
   const r = lib.rsi(closes, { period: 14 })
@@ -157,14 +157,14 @@ function rsiReport(slug, datasetFile, closes) {
 ${histLines}`
   writeReport(slug, { title: `RSI(14) behaviour — ${datasetFile}`, datasetFile, body, series: r })
 }
-rsiReport('rsi-sp500', 'sp500-daily.csv', sp500Closes)
+rsiReport('rsi-eurusd', 'eurusd-daily.csv', eurusdCloses)
 rsiReport('rsi-btcusdt', 'btcusdt-1d.csv', btcCloses)
 
 // ---------------------------------------------------------------------------------------------
-// MACD(12,26,9) — sp500-daily.csv (close-only)
+// MACD(12,26,9) — eurusd-daily.csv (close-only)
 // ---------------------------------------------------------------------------------------------
 {
-  const { macd, signal } = lib.macd(sp500Closes, { fast: 12, slow: 26, signal: 9 })
+  const { macd, signal } = lib.macd(eurusdCloses, { fast: 12, slow: 26, signal: 9 })
   const idx = crossovers(macd, signal)
   const validBars = macd.filter(isFin).length
   const perHundred = (100 * idx.length) / validBars
@@ -174,8 +174,8 @@ rsiReport('rsi-btcusdt', 'btcusdt-1d.csv', btcCloses)
 - Signal-line crossovers: ${idx.length} total, ${round2(perHundred)} per 100 bars
 - Median bars between crossovers: ${round2(medianGap)}`
   writeReport('macd', {
-    title: 'MACD(12,26,9) behaviour — sp500-daily.csv',
-    datasetFile: 'sp500-daily.csv',
+    title: 'MACD(12,26,9) behaviour — eurusd-daily.csv',
+    datasetFile: 'eurusd-daily.csv',
     body,
     series: [macd, signal],
     labels: ['macd', 'signal'],
@@ -183,12 +183,12 @@ rsiReport('rsi-btcusdt', 'btcusdt-1d.csv', btcCloses)
 }
 
 // ---------------------------------------------------------------------------------------------
-// Bollinger Bands(20,2) — sp500-daily.csv (close-only)
+// Bollinger Bands(20,2) — eurusd-daily.csv (close-only)
 // ---------------------------------------------------------------------------------------------
 {
-  const { upper, lower, middle } = lib.bollingerBands(sp500Closes, { period: 20, multiplier: 2 })
-  const idxValid = sp500Closes.map((_, i) => i).filter((i) => isFin(upper[i]) && isFin(lower[i]))
-  const outsideCount = idxValid.filter((i) => sp500Closes[i] > upper[i] || sp500Closes[i] < lower[i]).length
+  const { upper, lower, middle } = lib.bollingerBands(eurusdCloses, { period: 20, multiplier: 2 })
+  const idxValid = eurusdCloses.map((_, i) => i).filter((i) => isFin(upper[i]) && isFin(lower[i]))
+  const outsideCount = idxValid.filter((i) => eurusdCloses[i] > upper[i] || eurusdCloses[i] < lower[i]).length
   const outsidePct = (100 * outsideCount) / idxValid.length
   const body = `Bollinger Bands(20, 2σ) computed on the closing-price series (${idxValid.length} valid bars).
 
@@ -196,16 +196,16 @@ rsiReport('rsi-btcusdt', 'btcusdt-1d.csv', btcCloses)
 - Theoretical figure for a **normal distribution** at ±2σ: **4.6%** (this is the textbook value under a
   normality assumption, not an observation from this sample — it is cited here only for comparison)`
   writeReport('bollinger', {
-    title: 'Bollinger Bands(20,2) behaviour — sp500-daily.csv',
-    datasetFile: 'sp500-daily.csv',
+    title: 'Bollinger Bands(20,2) behaviour — eurusd-daily.csv',
+    datasetFile: 'eurusd-daily.csv',
     body,
-    series: [sp500Closes, upper, lower],
+    series: [eurusdCloses, upper, lower],
     labels: ['close', 'upper', 'lower'],
   })
 }
 
 // ---------------------------------------------------------------------------------------------
-// SMA(50) / EMA(20) — sp500-daily.csv (close-only): crossover behaviour of price vs. the average
+// SMA(50) / EMA(20) — eurusd-daily.csv (close-only): crossover behaviour of price vs. the average
 // ---------------------------------------------------------------------------------------------
 function maReport(slug, name, maArr, closes, datasetFile) {
   const idxValid = closes.map((_, i) => i).filter((i) => isFin(maArr[i]))
@@ -229,8 +229,8 @@ function maReport(slug, name, maArr, closes, datasetFile) {
     labels: ['close', name],
   })
 }
-maReport('sma', 'SMA(50)', lib.sma(sp500Closes, { period: 50 }), sp500Closes, 'sp500-daily.csv')
-maReport('ema', 'EMA(20)', lib.ema(sp500Closes, { period: 20 }), sp500Closes, 'sp500-daily.csv')
+maReport('sma', 'SMA(50)', lib.sma(eurusdCloses, { period: 50 }), eurusdCloses, 'eurusd-daily.csv')
+maReport('ema', 'EMA(20)', lib.ema(eurusdCloses, { period: 20 }), eurusdCloses, 'eurusd-daily.csv')
 
 // ---------------------------------------------------------------------------------------------
 // The remaining indicators need OHLC(V) — run on btcusdt-1d.csv, noted explicitly in each report.
