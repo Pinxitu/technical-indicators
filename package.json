@@ -42,6 +42,7 @@
     "LICENSE"
   ],
   "scripts": {
+    "prepare": "tsup",
     "build": "tsup",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
