@@ -60,4 +60,5 @@ Initial release.
 
 ### Distribution
 
-None yet.
+- 2026-09-21 — pull request to [wilsonfreitas/awesome-quant](https://github.com/wilsonfreitas/awesome-quant/pull/706) (Technical Indicators section).
+- 2026-09-21 — pull request to [paperswithbacktest/awesome-systematic-trading](https://github.com/paperswithbacktest/awesome-systematic-trading/pull/111) (Indicators table, three languages).
