@@ -45,10 +45,19 @@ Initial release.
 ### Tooling
 
 - TypeScript strict build (`tsup`) producing ESM, CJS and type declarations.
-- 68 Vitest unit tests covering every indicator, the risk module, and cross-indicator contract checks
+- 72 Vitest unit tests covering every indicator, the risk module, and cross-indicator contract checks
   (output length, empty/1-bar input handling).
 - GitHub Actions CI: typecheck, test, build on every push and pull request.
 
+### Changed
+
+- S&P 500, DJIA, NASDAQ Composite and VIX series are not redistributed: FRED tags all four
+  "Copyrighted: Pre-Approval Required" (S&P Dow Jones Indices / Nasdaq, Inc. / Cboe Global Markets hold
+  the copyright). `npm run data` still fetches them for local reproduction, but writes them to the
+  gitignored `data/local/` instead of `data/`. The evidence reports that used to run on `sp500-daily.csv`
+  (RSI, MACD, Bollinger Bands, SMA, EMA) now run on `eurusd-daily.csv` (FRED `DEXUSEU`, public domain)
+  instead; the OHLCV reports continue to use `btcusdt-1d.csv`.
+
 ### Distribution
 
-Pull requests to community lists are recorded here.
+None yet.

@@ -109,7 +109,7 @@ $$\text{TP} = \frac{H + L + C}{3}, \qquad \text{CCI} = \frac{\text{TP} - \text{S
 
 - Default: `period = 20`
 - Source: Lambert, Donald R. (1980). *Commodity Channel Index: Tool for Trading Cyclic Trends*.
-  Commodities Magazine (hoy Futures Magazine), octubre 1980.
+  Commodities Magazine (now Futures Magazine), October 1980.
   https://store.traders.com/-v01-c05-comm-pdf.html
 
 ## On-Balance Volume — `obv`
@@ -138,8 +138,9 @@ $$\text{SAR}_{t+1} = \text{SAR}_t + \text{AF} \cdot (\text{EP} - \text{SAR}_t)$$
 `AF` (acceleration factor) starts at `step`, increases by `step` on each new extreme point (`EP`) up to
 `max`, and resets to `step` on every trend reversal. A long SAR may never exceed the two prior bars'
 lows (a short SAR may never fall below the two prior bars' highs) — the unconditional two-bar clamp from
-Wilder's original rule, applied with no exception for the leg's first bar (see the JSDoc in
-`src/indicators/parabolic-sar.ts` for the worked-example correction this clamp required).
+Wilder's original rule, applied with no exception for the leg's first bar. Known deviation: on reversal
+the new SAR is set to the prior extreme point without clamping it into the reversal bar's range (TA-Lib
+does clamp).
 
 - Default: `step = 0.02`, `max = 0.2`
 - Source: Wilder, J. Welles (1978). *New Concepts in Technical Trading Systems*. Trend Research.
@@ -167,8 +168,8 @@ crosses it.
 - Default: `period = 10`, `multiplier = 3`
 - Sources: Wilder, J. Welles (1978). *New Concepts in Technical Trading Systems*. Trend Research (ATR,
   the basis of SuperTrend's bands). https://archive.org/details/newconceptsintec00wild
-  Rahman, Abdul (2024). *Unlocking Profit Potential: Maximizing Returns with Bayesian Optimization of
-  Supertrend Indicator Parameters*. arXiv preprint arXiv:2405.14262. https://arxiv.org/abs/2405.14262
+  Originator: Olivier Seban. Platform documentation: TradingView, *Supertrend* help page.
+  https://www.tradingview.com/support/solutions/43000634738-supertrend/
 
 ## Fibonacci Retracement / Extension — `fibonacciRetracement`, `fibonacciExtension`
 

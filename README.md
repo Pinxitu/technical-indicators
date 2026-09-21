@@ -3,7 +3,7 @@
 Dependency-free TypeScript implementations of the 16 technical indicators documented at
 [tradingcompendium.com](https://tradingcompendium.com), plus a small risk/position-sizing module. Every
 formula is hand-verifiable against the article it implements (Wilder's Wilder-smoothing, Bollinger's
-population standard deviation, Appel's MACD, and so on) and against `tests/` (68 passing tests). No
+population standard deviation, Appel's MACD, and so on) and against `tests/` (72 passing tests). No
 runtime dependencies, no bundled market data beyond the reproducible samples in `data/`, no network
 calls — you can read every function top to bottom in a few minutes.
 
@@ -15,9 +15,7 @@ Not published to npm. Install straight from GitHub:
 npm install github:Pinxitu/technical-indicators
 ```
 
-This installs the source only — there is no `prepare` script building `dist/` on install. If you need
-the compiled `dist/` output, either run `npm run build` yourself inside `node_modules/@tradingcompendium/technical-indicators`
-after installing, or build from a tagged release tarball that already contains `dist/`.
+Installing from GitHub runs the build automatically (`prepare`).
 
 ## Usage
 
@@ -36,8 +34,8 @@ console.log(rsi14.at(-1), sma20.at(-1), line.at(-1), signal.at(-1), histogram.at
 Indicators that need more than the close (ATR, ADX, Stochastic, Williams %R, CCI, Parabolic SAR,
 Ichimoku, SuperTrend, OBV, VWAP) take an array of `Candle` objects (`{ time, open, high, low, close,
 volume? }`) instead of a plain number array. Every output array has the same length as the input;
-positions inside the warm-up window are `NaN`, never a wrong number or a shorter array (see
-[Design rules](#design-rules)).
+positions inside the warm-up window are `NaN` (see [Design rules](#design-rules) for the full NaN
+contract, including behaviour on non-finite input).
 
 ## Indicators
 
@@ -45,7 +43,7 @@ positions inside the warm-up window are `NaN`, never a wrong number or a shorter
 |---|---|---|---|---|
 | `sma` | period 20 | [Simple Moving Average](https://tradingcompendium.com/en/technical-indicators/moving-average-simple) | [Media móvil simple (SMA)](https://tradingcompendium.com/es/indicadores-tecnicos/media-movil-simple-sma) | [sma.md](./evidence/out/sma.md) |
 | `ema` | period 20 | [Exponential Moving Average](https://tradingcompendium.com/en/technical-indicators/moving-average-exponential) | [Media móvil exponencial (EMA)](https://tradingcompendium.com/es/indicadores-tecnicos/media-movil-exponencial-ema) | [ema.md](./evidence/out/ema.md) |
-| `rsi` | period 14 | [RSI](https://tradingcompendium.com/en/technical-indicators/rsi) | [RSI](https://tradingcompendium.com/es/indicadores-tecnicos/rsi-indice-fuerza-relativa) | [rsi-sp500.md](./evidence/out/rsi-sp500.md), [rsi-btcusdt.md](./evidence/out/rsi-btcusdt.md) |
+| `rsi` | period 14 | [RSI](https://tradingcompendium.com/en/technical-indicators/rsi) | [RSI](https://tradingcompendium.com/es/indicadores-tecnicos/rsi-indice-fuerza-relativa) | [rsi-eurusd.md](./evidence/out/rsi-eurusd.md), [rsi-btcusdt.md](./evidence/out/rsi-btcusdt.md) |
 | `macd` | fast 12, slow 26, signal 9 | [MACD](https://tradingcompendium.com/en/technical-indicators/macd) | [MACD (convergencia/divergencia)](https://tradingcompendium.com/es/indicadores-tecnicos/macd-convergencia-divergencia) | [macd.md](./evidence/out/macd.md) |
 | `bollingerBands` | period 20, multiplier 2 | [Bollinger Bands](https://tradingcompendium.com/en/technical-indicators/bollinger-bands) | [Bandas de Bollinger](https://tradingcompendium.com/es/indicadores-tecnicos/bandas-de-bollinger) | [bollinger.md](./evidence/out/bollinger.md) |
 | `atr` | period 14 | [ATR (Average True Range)](https://tradingcompendium.com/en/technical-indicators/atr-average-true-range) | [ATR (rango verdadero medio)](https://tradingcompendium.com/es/indicadores-tecnicos/atr-average-true-range) | [atr.md](./evidence/out/atr.md) |
@@ -97,9 +95,18 @@ npm run build && npm run evidence
 - **NaN warm-up, not a shorter array.** Every indicator returns an array the same length as its input.
   Positions before the warm-up period completes are `NaN`, so callers can zip an indicator's output back
   against the original candle array by index without ever re-deriving an offset.
-- **Wilder smoothing where Wilder defined it.** ATR, ADX/DMI and Parabolic SAR use Wilder's original
-  running-average smoothing (`prev·(n−1)/n + x/n`), not a plain SMA or EMA, matching Wilder (1978) and
-  what TradingView/MetaTrader/StockCharts all implement by default.
+- **The NaN contract.** Input series must be finite. Only the warm-up is `NaN`. A non-finite value
+  inside the series is propagated as `NaN` by every indicator for at least that bar; window-based
+  indicators recover after the window passes, Wilder/EMA-based ones carry it forward.
+- **First valid index.** Window indicators (`sma`, `ema`, `bollingerBands`, `cci`, `williamsR`,
+  `stochastic` fast %K) emit from index `period − 1`. Wilder-on-differences indicators (`rsi`, `adx`
+  +DI/−DI) emit from index `period`. `atr` includes `TR[0] = high − low` and therefore emits from
+  `period − 1` — its seed differs from TA-Lib/TradingView (which start TR at bar 1) by about 1.5% at the
+  first value, decaying below 0.2% after ~50 bars. `macd`'s line emits from `slow − 1`, its signal from
+  `slow + signal − 2`. `adx` itself emits from `2·period − 1`.
+- **Wilder smoothing where Wilder defined it.** ATR and ADX/DMI use Wilder's original running-average
+  smoothing (`prev·(n−1)/n + x/n`), not a plain SMA or EMA, matching Wilder (1978) and what
+  TradingView/MetaTrader/StockCharts all implement by default.
 - **Population standard deviation in Bollinger Bands.** The band width uses `σ` over the window
   (divide by `n`, not `n−1`) — this is what Bollinger (2001) and every mainstream platform's default
   Bollinger Bands setting uses; a sample standard deviation would produce visibly wider bands.
