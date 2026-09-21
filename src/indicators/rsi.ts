@@ -8,7 +8,7 @@ export interface RsiOptions {
 /**
  * Relative Strength Index (Wilder 1978). RSI = 100 − 100 / (1 + RS), RS = Wilder-smoothed gain / loss.
  * Reference: https://tradingcompendium.com/en/technical-indicators/rsi
- *            https://tradingcompendium.com/es/indicadores-tecnicos/rsi
+ *            https://tradingcompendium.com/es/indicadores-tecnicos/rsi-indice-fuerza-relativa
  */
 export function rsi(input: number[] | Candle[], options: RsiOptions = {}): number[] {
   const period = options.period ?? 14
