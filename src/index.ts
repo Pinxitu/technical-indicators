@@ -33,3 +33,11 @@ export type { SupertrendOptions, SupertrendResult } from './indicators/supertren
 export { fibonacciRetracement, fibonacciExtension, FIBONACCI_RETRACEMENT_LEVELS, FIBONACCI_EXTENSION_LEVELS } from './indicators/fibonacci'
 export type { FibonacciOptions, FibonacciLevel } from './indicators/fibonacci'
 
+export { kellyFraction, expectancy, positionSize, riskRewardRatio, riskOfRuin, compoundGrowth, pipValue } from './risk'
+export type {
+  PositionSizeOptions,
+  RiskOfRuinOptions,
+  CompoundGrowthOptions,
+  PipValueOptions,
+} from './risk'
+
