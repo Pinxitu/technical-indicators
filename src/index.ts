@@ -26,4 +26,6 @@ export { vwap } from './indicators/vwap'
 export type { VwapOptions } from './indicators/vwap'
 export { parabolicSar } from './indicators/parabolic-sar'
 export type { ParabolicSarOptions, ParabolicSarResult } from './indicators/parabolic-sar'
+export { ichimoku } from './indicators/ichimoku'
+export type { IchimokuOptions, IchimokuResult } from './indicators/ichimoku'
 
