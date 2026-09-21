@@ -8,11 +8,13 @@ export const closesOf = (input: number[] | Candle[]): number[] =>
 export function sma(values: number[], period: number): number[] {
   const out = nanArray(values.length)
   if (period <= 0 || values.length < period) return out
-  let sum = 0
-  for (let i = 0; i < values.length; i++) {
-    sum += values[i]
-    if (i >= period) sum -= values[i - period]
-    if (i >= period - 1) out[i] = sum / period
+  // Recompute each window from scratch (not a running sum): a running sum would let one NaN
+  // (e.g. from a shorter warm-up in an upstream series) poison every subsequent window forever,
+  // since `sum -= values[i - period]` cannot un-NaN a sum that already went NaN.
+  for (let i = period - 1; i < values.length; i++) {
+    let sum = 0
+    for (let j = i - period + 1; j <= i; j++) sum += values[j]
+    out[i] = sum / period
   }
   return out
 }
