@@ -13,3 +13,5 @@ export type { BollingerOptions, BollingerResult } from './indicators/bollinger-b
 export { trueRange } from './core/true-range'
 export { atr } from './indicators/atr'
 export type { AtrOptions } from './indicators/atr'
+export { adx } from './indicators/adx'
+export type { AdxOptions, AdxResult } from './indicators/adx'
