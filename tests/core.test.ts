@@ -8,6 +8,9 @@ describe('core', () => {
   it('sma with short input is all NaN', () => {
     expect(sma([1, 2], 3)).toEqual([NaN, NaN])
   })
+  it('sma recovers after leading NaN instead of poisoning every window forever', () => {
+    expect(sma([NaN, NaN, 1, 2, 3], 2)).toEqual([NaN, NaN, NaN, 1.5, 2.5])
+  })
   it('ema(3) of 1..5: seed SMA=2, K=0.5 → [NaN,NaN,2,3,4]', () => {
     expect(emaSeries([1, 2, 3, 4, 5], 3)).toEqual([NaN, NaN, 2, 3, 4])
   })

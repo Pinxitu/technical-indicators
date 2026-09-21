@@ -13,9 +13,12 @@ export interface ParabolicSarResult {
 
 /**
  * Parabolic SAR (Wilder 1978). SAR(t+1) = SAR(t) + AF·(EP − SAR(t)); AF starts at `step`, grows by `step` on
- * each new extreme up to `max`; long SAR may not exceed the two prior lows (short: two prior highs) — "prior"
- * meaning within the current leg: the bar that seeded the leg (index 0, or the bar a reversal happened on)
- * is only ever used to seed SAR/EP and is not itself reused as a clamp bound.
+ * each new extreme up to `max`; long SAR may not exceed the two prior lows (short: two prior highs) — the
+ * unconditional two-bar clamp of Wilder 1978 / TA-Lib, applied against candles[i-1] and candles[i-2] with no
+ * exception for the leg's seed bar. (An earlier version of this file exempted the seed bar from the clamp to
+ * match a plan document's worked example; that example turned out to have forgotten to apply its own stated
+ * clamp rule at SAR[2] — re-derived by hand, the correct, clamp-respecting chain for the fixture in
+ * tests/parabolic-sar.ts is SAR[1..4] = 10, 10, 10.12, 10.3528, which is what this implementation produces.)
  * Reference: https://tradingcompendium.com/en/technical-indicators/parabolic-sar-stop-and-reverse
  *            https://tradingcompendium.com/es/indicadores-tecnicos/parabolic-sar-stop-and-reverse
  */
@@ -29,15 +32,12 @@ export function parabolicSar(candles: Candle[], options: ParabolicSarOptions = {
   let af = step
   let ep = long ? candles[1].high : candles[1].low
   let cur = long ? candles[0].low : candles[0].high
-  let legStart = 0
   sar[1] = cur
   trend[1] = long ? 1 : -1
   for (let i = 2; i < n; i++) {
     let next = cur + af * (ep - cur)
-    const lowAt = (idx: number): number => (idx > legStart ? candles[idx].low : Infinity)
-    const highAt = (idx: number): number => (idx > legStart ? candles[idx].high : -Infinity)
-    if (long) next = Math.min(next, lowAt(i - 1), lowAt(i - 2))
-    else next = Math.max(next, highAt(i - 1), highAt(i - 2))
+    if (long) next = Math.min(next, candles[i - 1].low, candles[i - 2].low)
+    else next = Math.max(next, candles[i - 1].high, candles[i - 2].high)
     const c = candles[i]
     if (long && c.low < next) {
       // reverse to short
@@ -45,14 +45,12 @@ export function parabolicSar(candles: Candle[], options: ParabolicSarOptions = {
       next = ep
       ep = c.low
       af = step
-      legStart = i
     } else if (!long && c.high > next) {
       // reverse to long
       long = true
       next = ep
       ep = c.high
       af = step
-      legStart = i
     } else if (long && c.high > ep) {
       ep = c.high
       af = Math.min(af + step, max)

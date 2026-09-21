@@ -2,13 +2,17 @@ import { describe, it, expect } from 'vitest'
 import { parabolicSar } from '../src/indicators/parabolic-sar'
 const bar = (high: number, low: number, close: number, i = 0) => ({ time: i, open: close, high, low, close })
 describe('parabolicSar', () => {
-  it('uptrend hand-computed (Wilder)', () => {
+  it('uptrend hand-computed (Wilder, two-bar clamp applied)', () => {
     const bars = [0, 1, 2, 3, 4].map((i) => bar(11 + i, 10 + i, 10.5 + i, i))
     const { sar, trend } = parabolicSar(bars)
     expect(sar[1]).toBeCloseTo(10, 10)
-    expect(sar[2]).toBeCloseTo(10.04, 10)
-    expect(sar[3]).toBeCloseTo(10.1584, 10)
-    expect(sar[4]).toBeCloseTo(10.388896, 10)
+    // SAR[2] candidate = 10 + 0.02*(12-10) = 10.04, but the Wilder clamp caps it at
+    // min(low[1]=11, low[0]=10) = 10.
+    expect(sar[2]).toBeCloseTo(10, 10)
+    // SAR[3] = 10 + 0.04*(13-10) = 10.12 (clamp min(low[2]=12, low[1]=11)=11 does not bind).
+    expect(sar[3]).toBeCloseTo(10.12, 10)
+    // SAR[4] = 10.12 + 0.06*(14-10.12) = 10.3528 (clamp min(low[3]=13, low[2]=12)=12 does not bind).
+    expect(sar[4]).toBeCloseTo(10.3528, 10)
     expect(trend.slice(1)).toEqual([1, 1, 1, 1])
   })
   it('reverses when price crosses the SAR', () => {

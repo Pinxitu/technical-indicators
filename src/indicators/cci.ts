@@ -13,8 +13,9 @@ export interface CciOptions {
 export function cci(candles: Candle[], options: CciOptions = {}): number[] {
   const period = options.period ?? 20
   const tp = candles.map((c) => (c.high + c.low + c.close) / 3)
-  const mean = sma(tp, period)
   const out = nanArray(tp.length)
+  if (period <= 0) return out
+  const mean = sma(tp, period)
   for (let i = period - 1; i < tp.length; i++) {
     let md = 0
     for (let j = i - period + 1; j <= i; j++) md += Math.abs(tp[j] - mean[i])
