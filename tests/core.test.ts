@@ -26,6 +26,17 @@ describe('core', () => {
     expect(out.slice(0, 7).every(Number.isNaN)).toBe(true)
     expect(out[7]).toBeCloseTo(2, 10)
   })
+  it('stdDevPop with period <= 0 or short input returns all-NaN with no stray properties', () => {
+    const zero = stdDevPop([1, 2, 3], 0)
+    expect(zero).toEqual([NaN, NaN, NaN])
+    expect(Object.keys(zero).length).toBe(zero.length)
+
+    const negative = stdDevPop([1, 2, 3, 4], -1)
+    expect(negative).toEqual([NaN, NaN, NaN, NaN])
+    expect(Object.keys(negative).length).toBe(negative.length)
+
+    expect(stdDevPop([1, 2], 3)).toEqual([NaN, NaN])
+  })
   it('closesOf accepts numbers or candles', () => {
     expect(closesOf([1, 2])).toEqual([1, 2])
     expect(closesOf([{ time: 0, open: 1, high: 2, low: 0, close: 1.5 }])).toEqual([1.5])

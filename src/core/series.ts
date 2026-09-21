@@ -66,6 +66,7 @@ export const rollingMin = (v: number[], p: number): number[] => rolling(v, p, Ma
 /** Population standard deviation over a rolling window (what Bollinger/StockCharts use). */
 export function stdDevPop(values: number[], period: number): number[] {
   const out = nanArray(values.length)
+  if (period <= 0 || values.length < period) return out
   const means = sma(values, period)
   for (let i = period - 1; i < values.length; i++) {
     let ss = 0
